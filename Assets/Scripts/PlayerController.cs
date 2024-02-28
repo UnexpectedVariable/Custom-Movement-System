@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,10 +19,43 @@ public class PlayerController : MonoBehaviour
     private float _maxVelocity = 1.0f;
     [SerializeField]
     private float _velocityMultiplier = 1.0f;
+    [SerializeField, Range(1, 100)]
+    private float _xSensitivity = 1.0f;
+    [SerializeField, Range(1, 100)]
+    private float _ySensitivity = 1.0f;
+    [SerializeField, Range(0, 360)]
+    private float _yRotationMax = 1.0f;
+    [SerializeField, Range(0, 360)]
+    private float _yRotationMin = 1.0f;
+
+    [Header("Body parts")]
+    private GameObject _head = null;
+
+    [Header("Debug")]
+    private GameObject _comRepresentation = null;
 
     private void Start()
     {
+        InitializeRigidbody();
+        InitializeBody();
+        InitializeDebugObjects();
+    }
+
+    void InitializeRigidbody()
+    {
+        _rigidbody ??= GetComponent<Rigidbody>();
         _rigidbody.maxLinearVelocity = _maxVelocity;
+    }
+
+    private void InitializeBody()
+    {
+        _head ??= GameObject.Find("HeadGO");
+    }
+
+    void InitializeDebugObjects()
+    {
+        _comRepresentation = _comRepresentation ?? GameObject.Find("CenterOfMassRespresentation");
+        _comRepresentation.transform.position = _rigidbody.centerOfMass;
     }
 
     private void FixedUpdate()
@@ -43,9 +78,21 @@ public class PlayerController : MonoBehaviour
     {
         //Debug.Log($"{name} OnRotate invoked: input value is {value.Get<Vector2>()}");
         Vector2 rotationVec = value.Get<Vector2>();
-        Vector3 rotationSum = transform.rotation.eulerAngles;
-        rotationSum.y += rotationVec.y;
-        Quaternion rotation = Quaternion.LookRotation(rotationSum, Vector3.up);
-        _rigidbody.MoveRotation(rotation);
+        if (rotationVec == Vector2.zero) return;
+        Vector3 xRotation = _rigidbody.rotation.eulerAngles;
+        xRotation.y += rotationVec.x;
+        Quaternion rotation = Quaternion.Euler(xRotation);
+        _rigidbody.MoveRotation(Quaternion.RotateTowards(_rigidbody.rotation, rotation, Time.deltaTime * _xSensitivity));
+
+        Vector3 yRotation = _head.transform.rotation.eulerAngles;
+        yRotation.x -= rotationVec.y;
+        rotation = Quaternion.Euler(yRotation);
+        yRotation.x = (yRotation.x - 90) % 180;
+        if (yRotation.x > (_yRotationMax - 90) % 180 || yRotation.x < (-_yRotationMin - 90) % 180)
+        {
+            return;
+        }
+        _head.transform.rotation = Quaternion.RotateTowards(_head.transform.rotation, rotation, Time.deltaTime * _ySensitivity);
+        _camera.transform.rotation = _head.transform.rotation;
     }
 }
