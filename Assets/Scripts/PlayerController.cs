@@ -24,9 +24,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(1, 100)]
     private float _ySensitivity = 1.0f;
     [SerializeField, Range(0, 360)]
-    private float _yRotationMax = 1.0f;
+    private float _yUpperRotationMax = 1.0f;
     [SerializeField, Range(0, 360)]
-    private float _yRotationMin = 1.0f;
+    private float _yLowerRotationMax = 1.0f;
 
     [Header("Body parts")]
     private GameObject _head = null;
@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
 
     void InitializeRigidbody()
     {
-        _rigidbody ??= GetComponent<Rigidbody>();
+        _rigidbody ??= GetComponent<Rigidbody>(); //doesn't work as intended
         _rigidbody.maxLinearVelocity = _maxVelocity;
     }
 
@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
 
     void InitializeDebugObjects()
     {
-        _comRepresentation = _comRepresentation ?? GameObject.Find("CenterOfMassRespresentation");
+        _comRepresentation ??= GameObject.Find("CenterOfMassRespresentation");
         _comRepresentation.transform.position = _rigidbody.centerOfMass;
     }
 
@@ -79,20 +79,41 @@ public class PlayerController : MonoBehaviour
         //Debug.Log($"{name} OnRotate invoked: input value is {value.Get<Vector2>()}");
         Vector2 rotationVec = value.Get<Vector2>();
         if (rotationVec == Vector2.zero) return;
+        RotateAlongX(rotationVec);
+        RotateAlongY(rotationVec);
+    }
+
+    void RotateAlongX(Vector2 rotationVec)
+    {
         Vector3 xRotation = _rigidbody.rotation.eulerAngles;
         xRotation.y += rotationVec.x;
         Quaternion rotation = Quaternion.Euler(xRotation);
         _rigidbody.MoveRotation(Quaternion.RotateTowards(_rigidbody.rotation, rotation, Time.deltaTime * _xSensitivity));
+    }
 
+    void RotateAlongY(Vector2 rotationVec)
+    {
         Vector3 yRotation = _head.transform.rotation.eulerAngles;
-        yRotation.x -= rotationVec.y;
-        rotation = Quaternion.Euler(yRotation);
-        yRotation.x = (yRotation.x - 90) % 180;
-        if (yRotation.x > (_yRotationMax - 90) % 180 || yRotation.x < (-_yRotationMin - 90) % 180)
-        {
-            return;
-        }
+        yRotation.x -= rotationVec.y; //minus because otherwise inverted
+        Quaternion rotation = Quaternion.Euler(yRotation);
+        if (!IsWithinRotationBoundaries(yRotation)) return;
         _head.transform.rotation = Quaternion.RotateTowards(_head.transform.rotation, rotation, Time.deltaTime * _ySensitivity);
         _camera.transform.rotation = _head.transform.rotation;
+    }
+
+    bool IsWithinRotationBoundaries(Vector3 targetRotation)
+    {
+        if(IsWithinUpperRange(targetRotation))
+        {
+            Debug.Log($"{name} head rotation is withing upper range boundaries {targetRotation.x > _yUpperRotationMax}");
+            return targetRotation.x > _yUpperRotationMax;
+        }
+        Debug.Log($"{name} head rotation is withing lower range boundaries {targetRotation.x < _yLowerRotationMax}");
+        return targetRotation.x < _yLowerRotationMax;
+    }
+
+    bool IsWithinUpperRange(Vector3 rotation)
+    {
+        return rotation.x - 90 > 0;
     }
 }

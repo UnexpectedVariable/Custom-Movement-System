@@ -602,8 +602,8 @@ MonoBehaviour:
   _velocityMultiplier: 10
   _xSensitivity: 50
   _ySensitivity: 50
-  _yRotationMax: 260
-  _yRotationMin: 45
+  _yUpperRotationMax: 295
+  _yLowerRotationMax: 30
 --- !u!114 &1299372538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -660,7 +660,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!1 &1434411313
 GameObject:
