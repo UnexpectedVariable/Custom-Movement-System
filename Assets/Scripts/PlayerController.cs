@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
 
     void InitializeRigidbody()
     {
-        _rigidbody ??= GetComponent<Rigidbody>(); //doesn't work as intended
+        _rigidbody ??= GetComponent<Rigidbody>(); //doesn't work as intended cause rigidbody is serialized(unity fake null)
         _rigidbody.maxLinearVelocity = _maxVelocity;
     }
 
@@ -60,8 +60,6 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Debug.Log($"{name} rigidbody velocity is {_rigidbody.velocity}");
-
         if (_playerInput.currentActionMap["Forward"].IsPressed()) MoveRigidbody(transform.forward);
         if (_playerInput.currentActionMap["Backward"].IsPressed()) MoveRigidbody(transform.forward * -1);
         if (_playerInput.currentActionMap["Right"].IsPressed()) MoveRigidbody(transform.right);
@@ -105,10 +103,8 @@ public class PlayerController : MonoBehaviour
     {
         if(IsWithinUpperRange(targetRotation))
         {
-            Debug.Log($"{name} head rotation is withing upper range boundaries {targetRotation.x > _yUpperRotationMax}");
             return targetRotation.x > _yUpperRotationMax;
         }
-        Debug.Log($"{name} head rotation is withing lower range boundaries {targetRotation.x < _yLowerRotationMax}");
         return targetRotation.x < _yLowerRotationMax;
     }
 
