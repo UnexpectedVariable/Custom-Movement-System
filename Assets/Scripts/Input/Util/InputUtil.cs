@@ -3,9 +3,11 @@ using Assets.Scripts.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Experimental.Playables;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
@@ -21,10 +23,11 @@ namespace Assets.Scripts.Input.Util
         public static void Initialize()
         {
             InputActionAssets = AssetsUtil.GetAssetsByType(typeof(InputActionAsset));
-            InputActionMaps = InitializeAllMaps();
+            InputActionMaps = GetAllActionMaps();
+            InitializeActionMaps();
         }
 
-        private static IReadOnlyList<object> InitializeAllMaps()
+        private static IReadOnlyList<object> GetAllActionMaps()
         {
             List<object> actionMaps = new List<object>();
 
@@ -45,7 +48,15 @@ namespace Assets.Scripts.Input.Util
             return actionMaps;
         }
 
-        public static IEnumerable<object> GetElement(IEnumerable<object> elements)
+        private static void InitializeActionMaps()
+        {
+            foreach(var map in InputActionMaps)
+            {
+                (map as InputActionMap).Enable();
+            }
+        }
+
+        private static IEnumerable<object> GetElement(IEnumerable<object> elements)
         {
             foreach (var element in elements)
             {
@@ -53,6 +64,55 @@ namespace Assets.Scripts.Input.Util
                     $"GUID: {(element as InputActionMap).id}");
                 yield return element;
             }
+        }
+
+        public static InputActionMap FindMap(string name)
+        {
+            return (InputActionMap)FindMapByObject(name);
+        }
+        
+        public static InputActionMap FindMap(Guid id)
+        {
+            return (InputActionMap)FindMapByObject(id);
+        }
+
+        private static object FindMapByField(FieldInfo fieldInfo, object o)
+        {
+            foreach (var map in InputActionMaps)
+            {
+                var mapField = map
+                    .GetType()
+                    .GetField(fieldInfo.Name)
+                    .GetValue(map);
+                if (mapField == fieldInfo.GetValue(o)) return map;
+            }
+            return null;
+        }
+        
+        private static object FindMapByObject(object targetValue)
+        {
+            var objectType = targetValue.GetType();
+            foreach (var map in InputActionMaps)
+            {
+                var fields = map.GetType().GetFields();
+                foreach (var field in fields)
+                {
+                    if(field.FieldType == objectType)
+                    {
+                        if(field.GetValue(map).Equals(targetValue)) return map;
+                    }
+                }
+
+                var properties = map.GetType().GetProperties();
+                foreach (var property in properties)
+                {
+                    if(property.PropertyType == objectType)
+                    {
+                        if (property.GetValue(map).Equals(targetValue)) return map;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

@@ -9,10 +9,10 @@ namespace Assets.Scripts.Util
 {
     public static class AssetsUtil
     {
-#if UNITY_EDITOR
         public static List<object> GetAssetsByType(Type assetType)
         {
             List<object> assets = new List<object>();
+#if UNITY_EDITOR
             var guids = AssetDatabase.FindAssets($"t:{assetType}");
             foreach ( var guid in guids )
             {
@@ -20,8 +20,8 @@ namespace Assets.Scripts.Util
                 if (asset == null) continue;
                 assets.Add(asset);
             }
+#endif
             return assets;
         }
-#endif
     }
 }

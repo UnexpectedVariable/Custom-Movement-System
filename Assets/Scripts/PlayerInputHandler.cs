@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.Events;
+using Assets.Scripts.Input.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -10,15 +12,11 @@ namespace Assets.Scripts
     internal class PlayerInputHandler : MonoBehaviour, IInputHandler
     {
         [SerializeField]
-        private PlayerInput _playerInput = null;
         EventBinding<MovementEvent> _movementEventBinding;
 
         private void FixedUpdate()
         {
-            if (_playerInput.currentActionMap["Forward"].IsPressed()) EventBus<MovementEvent>.Raise(new MovementEvent { direction = transform.forward });
-            if (_playerInput.currentActionMap["Backward"].IsPressed()) EventBus<MovementEvent>.Raise(new MovementEvent { direction = transform.forward * -1 });
-            if (_playerInput.currentActionMap["Right"].IsPressed()) EventBus<MovementEvent>.Raise(new MovementEvent { direction = transform.right });
-            if (_playerInput.currentActionMap["Left"].IsPressed()) EventBus<MovementEvent>.Raise(new MovementEvent { direction = transform.right * -1 });
+            
         }
 
         public void HandleInput()
@@ -37,14 +35,17 @@ namespace Assets.Scripts
             _movementEventBinding = new EventBinding<MovementEvent>(HandleMovementEvent);
             EventBus<MovementEvent>.Register( _movementEventBinding );
 
-            _playerInput.onActionTriggered += OnActionTriggered;
+            InputUtil.FindMap("Player Movement").actionTriggered += OnActionTriggered;
+
+            //Debug.Log($"{InputUtil.FindMap(Guid.Parse("ab12da6a-01c1-47db-930f-ccb079da0deb")) == null}");
         }
 
         private void OnDisable()
         {
             EventBus<MovementEvent>.Deregister( _movementEventBinding );
 
-            _playerInput.onActionTriggered -= OnActionTriggered;
+            //_playerInput.onActionTriggered -= OnActionTriggered;
+            //_playerInput.currentActionMap.actionTriggered -= OnActionTriggered;
         }
 
         private void OnActionTriggered(InputAction.CallbackContext callbackContext)
