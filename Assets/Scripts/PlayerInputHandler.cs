@@ -1,4 +1,7 @@
 ﻿using Assets.Scripts.Events;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,18 +28,29 @@ namespace Assets.Scripts
 
         public void HandleMovementEvent(object o, MovementEvent e)
         {
-            Debug.Log($"{o.GetType().Name} Movement event received! Direction {e.direction}");
+            //Debug.Log($"{o.GetType().Name} Movement event received! Direction {e.direction}");
+
         }
 
         private void OnEnable()
         {
             _movementEventBinding = new EventBinding<MovementEvent>(HandleMovementEvent);
             EventBus<MovementEvent>.Register( _movementEventBinding );
+
+            _playerInput.onActionTriggered += OnActionTriggered;
         }
 
         private void OnDisable()
         {
             EventBus<MovementEvent>.Deregister( _movementEventBinding );
+
+            _playerInput.onActionTriggered -= OnActionTriggered;
+        }
+
+        private void OnActionTriggered(InputAction.CallbackContext callbackContext)
+        {
+            Debug.Log($"Action triggered!\n" +
+                $"Value type: {callbackContext.valueType}");
         }
     }
 }

@@ -9,8 +9,8 @@ namespace Assets.Scripts.Events.Util
 {
     public static class EventBusUtil
     {
-        public static IReadOnlyList<Type> EventTypes { get; set; }
-        public static IReadOnlyList<Type> EventBusTypes { get; set; }
+        public static IReadOnlyList<Type> EventTypes { get; private set; }
+        public static IReadOnlyList<Type> EventBusTypes { get; private set; }
 
 #if UNITY_EDITOR
         public static PlayModeStateChange PlayModeState { get; set; }
