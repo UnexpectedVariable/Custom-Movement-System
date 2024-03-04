@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Assets.Scripts
 {
-    internal interface IInputHandler
+    internal interface ITracker<T>
     {
-        void HandleInput();
+        public List<T> Tracked { get; }
     }
 }

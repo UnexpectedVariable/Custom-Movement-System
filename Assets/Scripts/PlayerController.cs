@@ -1,3 +1,5 @@
+using Assets.Scripts;
+using Assets.Scripts.Events;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,16 +11,15 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider), typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
 {
+    private InputEventHandler<InputEvent> _inputHandler = null;
+
     [SerializeField]
     private Rigidbody _rigidbody = null;
     [SerializeField] 
     private PlayerInput _playerInput = null;
     [SerializeField]
     private Camera _camera = null;
-    [SerializeField]
-    private float _maxVelocity = 1.0f;
-    [SerializeField]
-    private float _velocityMultiplier = 1.0f;
+    
     [SerializeField, Range(1, 100)]
     private float _xSensitivity = 1.0f;
     [SerializeField, Range(1, 100)]
@@ -34,17 +35,17 @@ public class PlayerController : MonoBehaviour
     [Header("Debug")]
     private GameObject _comRepresentation = null;
 
+    /*[Header("New control system")]
+    [SerializeField]
+    private GameObject _body = null;*/
+
     private void Start()
     {
-        InitializeRigidbody();
+        _inputHandler = new PlayerInputHandler<InputEvent>();
+        _inputHandler.Initialize();
+
         InitializeBody();
         InitializeDebugObjects();
-    }
-
-    void InitializeRigidbody()
-    {
-        _rigidbody ??= GetComponent<Rigidbody>(); //doesn't work as intended cause rigidbody is serialized(unity fake null)
-        _rigidbody.maxLinearVelocity = _maxVelocity;
     }
 
     private void InitializeBody()
@@ -56,20 +57,6 @@ public class PlayerController : MonoBehaviour
     {
         _comRepresentation ??= GameObject.Find("CenterOfMassRespresentation");
         _comRepresentation.transform.position = _rigidbody.centerOfMass;
-    }
-
-    private void FixedUpdate()
-    {
-        if (_playerInput.currentActionMap["Forward"].IsPressed()) MoveRigidbody(transform.forward);
-        if (_playerInput.currentActionMap["Backward"].IsPressed()) MoveRigidbody(transform.forward * -1);
-        if (_playerInput.currentActionMap["Right"].IsPressed()) MoveRigidbody(transform.right);
-        if (_playerInput.currentActionMap["Left"]. IsPressed()) MoveRigidbody(transform.right * -1);
-    }
-
-    void MoveRigidbody(Vector3 direction)
-    {
-        //Debug.Log($"{name} MoveRigidbody invoked: direction is {direction}");
-        _rigidbody.AddForce(direction * _velocityMultiplier);
     }
 
     void OnRotate(InputValue value)
