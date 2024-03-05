@@ -3,23 +3,25 @@ using Assets.Scripts.Events;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider), typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
 {
-    private InputEventHandler<InputEvent> _inputHandler = null;
+    private InputEventHandler<InputEvent> _movementInputHandler = null;
+    
+    public string MovementActionMapName;
 
     [SerializeField]
     private Rigidbody _rigidbody = null;
-    [SerializeField] 
-    private PlayerInput _playerInput = null;
     [SerializeField]
     private Camera _camera = null;
-    
+
     [SerializeField, Range(1, 100)]
     private float _xSensitivity = 1.0f;
     [SerializeField, Range(1, 100)]
@@ -35,14 +37,22 @@ public class PlayerController : MonoBehaviour
     [Header("Debug")]
     private GameObject _comRepresentation = null;
 
-    /*[Header("New control system")]
+    [Header("Control system")]
     [SerializeField]
-    private GameObject _body = null;*/
+    private InputActionAsset _inputAsset = null;
+
+    [Header("UIToolkit test")]
+    public IReadOnlyList<string> InspectorList = new List<string>()
+    {
+        "Value1", "Value2", "Value3"
+    };
+    //public ReadOnlyArray<string> InspectorReadOnlyArray = new ReadOnlyArray<string>(InspectorList.ToArray());
+    public int Count = 4;
 
     private void Start()
     {
-        _inputHandler = new PlayerInputHandler<InputEvent>();
-        _inputHandler.Initialize();
+        _movementInputHandler = new PlayerInputHandler<InputEvent>(_inputAsset.FindActionMap(MovementActionMapName)); //change
+        _movementInputHandler.Initialize();
 
         InitializeBody();
         InitializeDebugObjects();
