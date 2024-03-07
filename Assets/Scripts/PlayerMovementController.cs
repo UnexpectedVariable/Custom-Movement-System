@@ -163,23 +163,20 @@ namespace Assets.Scripts
             }
         }
 
-        public void ValidateInputs()
+        public void ValidateInputs(InputActionMap actionMap)
         {
             if(_movementActuationMap == null)  return;
 
-            foreach(var movementPair in _movementActuationMap)
+            for(int i = 0; i < _movementActuationMap.Count; i++)
             {
+                var movementPair = _movementActuationMap.ElementAt(i);
                 if (movementPair.Value == null) continue;
 
                 foreach (var binding in movementPair.Value.bindings)
                 {
-                    //check if this binding also appears in new map
-                    //if not null input action and continue
-                    //if (isActuated) break;
+                    if(actionMap.bindings.Contains(binding)) continue;
+                    _movementActuationMap[movementPair.Key] = null;
                 }
-
-                //if (isActuated) continue;
-                _movementActuationMap[movementPair.Key] = null;
             }
         }
     }

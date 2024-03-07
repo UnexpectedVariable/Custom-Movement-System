@@ -76,8 +76,9 @@ namespace Assets.Scripts
                 dropdown.choices = inputAssetObject.actionMaps.Select(x => x.name).ToList();
                 dropdown.RegisterValueChangedCallback(evt =>
                 {
-                    controller.PlayerInputBinders[index].ActionMap = inputAssetObject.FindActionMap(evt.newValue);
-                    controller.PlayerMovementController.ValidateInputs();
+                    var newActionMap = inputAssetObject.FindActionMap(evt.newValue);
+                    controller.PlayerInputBinders[index].ActionMap = newActionMap;
+                    controller.PlayerMovementController.ValidateInputs(newActionMap);
                 });
             };
 
