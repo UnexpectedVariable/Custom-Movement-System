@@ -3,30 +3,44 @@ using Assets.Scripts.Events.Movement.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Assets.Scripts
 {
     [RequireComponent(typeof(Rigidbody))]
-    internal class PlayerMovementController : MonoBehaviour, IMovementController, IObserver<SupportCollidersTracker>
+    public class PlayerMovementController : MonoBehaviour, IMovementController, IObserver<SupportCollidersTracker>
     {
         private EventBinding<InputEvent> _movementEventBinding;
         private Rigidbody _rb;
-        private Vector3 _movementVector;
+        //private Vector3 _movementVector;
 
-        public Vector3 MovementVector
+        private Dictionary<MovementUtil.MovementType, InputAction> _movementActuationMap;
+
+        /*public Vector3 MovementVector
         {
             get => _movementVector;
             private set => _movementVector = value;
-        }
+        }*/
 
         public Vector3 TotalMovementVector
         {
-            get => _movementVector * _velocityMultiplier;
+            get
+            {
+                var movementVector = Vector3.zero;
+                foreach(var movementPair in _movementActuationMap)
+                {
+                    if (movementPair.Value == null) continue;
+                    movementVector += GetMovementDirection(movementPair.Key);
+                }
+                return movementVector * _velocityMultiplier;
+            }
         }
 
         [Header("Movement parameters")]
@@ -42,6 +56,18 @@ namespace Assets.Scripts
         {
             _movementEventBinding = new EventBinding<InputEvent>(HandleMovement);
             _rb ??= GetComponent<Rigidbody>();
+            InitializeMovementMap();
+        }
+
+        private void InitializeMovementMap()
+        {
+            var MovementTypes = Enum.GetValues(typeof(MovementUtil.MovementType));
+            int capacity = MovementTypes.Length;
+            _movementActuationMap = new Dictionary<MovementUtil.MovementType, InputAction>(capacity);
+            for (int i = 0; i < capacity; i++)
+            {
+                _movementActuationMap.Add((MovementUtil.MovementType)MovementTypes.GetValue(i), null);
+            }
         }
 
         private void Start()
@@ -73,25 +99,45 @@ namespace Assets.Scripts
 
         private void HandleMovement(object o, InputEvent e)
         {
-            var context = e.Context;
+            var context = e.InputContext;
             if (context.valueType != typeof(Single)) return;
-            //add logic that recognizes if the action can be performed at all
-            //aka you can't strafe in or jump off of an air
 
 
             Debug.Log("Movement input detected!");
-            var direction = GetMovementDirection(context.action);
             _ = context.phase switch
             {
-                InputActionPhase.Performed => MovementVector += direction,
-                InputActionPhase.Canceled => MovementVector -= direction,
-                _ => MovementVector += Vector3.zero
+                InputActionPhase.Performed => ActuateMovement(context),
+                InputActionPhase.Canceled => CancelMovement(context),
+                _ => false
             };
+        }
+
+        private bool ActuateMovement(InputAction.CallbackContext context)
+        {
+            var type = MovementUtil.GetMovementType(context.action.name);
+            if(type == null) return false;
+
+            _movementActuationMap[type.Value] = context.action;
+            return true;
+        }
+
+        private bool CancelMovement(InputAction.CallbackContext context)
+        {
+            var type = MovementUtil.GetMovementType(context.action.name);
+            if (type == null) return false;
+
+            _movementActuationMap[type.Value] = null;
+            return true;
         }
 
         private Vector3 GetMovementDirection(InputAction action)
         {
             var movementType = MovementUtil.GetMovementType(action.name);
+            return GetMovementDirection(movementType);
+        }
+
+        private Vector3 GetMovementDirection(MovementUtil.MovementType? movementType)
+        {
             return movementType switch
             {
                 MovementUtil.MovementType.Forward => _rb.transform.forward,
@@ -114,6 +160,26 @@ namespace Assets.Scripts
             else
             {
                 if(supportCount > 0) _isMovementPossible = true;
+            }
+        }
+
+        public void ValidateInputs()
+        {
+            if(_movementActuationMap == null)  return;
+
+            foreach(var movementPair in _movementActuationMap)
+            {
+                if (movementPair.Value == null) continue;
+
+                foreach (var binding in movementPair.Value.bindings)
+                {
+                    //check if this binding also appears in new map
+                    //if not null input action and continue
+                    //if (isActuated) break;
+                }
+
+                //if (isActuated) continue;
+                _movementActuationMap[movementPair.Key] = null;
             }
         }
     }

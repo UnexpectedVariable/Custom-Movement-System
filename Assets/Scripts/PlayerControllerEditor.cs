@@ -19,11 +19,25 @@ namespace Assets.Scripts
         {
             var root = new VisualElement();
             var playerController = (PlayerController)target;
-            //m_UXML.CloneTree(root);
+
+#if UNITY_EDITOR
+            if(m_UXML) m_UXML.CloneTree(root);
+            else
+            {
+                var uxmlGuid = AssetDatabase.FindAssets("PlayerControllerEditor", new string[] { "Assets/ToolingUI/UXML" });
+                m_UXML = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(AssetDatabase.GUIDToAssetPath(uxmlGuid[0]));
+                m_UXML.CloneTree(root);
+            }
+#endif
+
+            var mcListView = root.Q<MultiColumnListView>();
+            mcListView.viewDataKey = $"{target.name} PlayerControllerActionMaps_MultiColumnListView";
+            mcListView.itemsSource = playerController.PlayerInputBinders;
+
 
             var InputActionAssetProperty = serializedObject.FindProperty("_inputAsset");
             //var MovementActionMapProperty = serializedObject.FindProperty("_movementActionMap");
-            root.Add(BuildInputAssetProperty(InputActionAssetProperty, playerController));
+            BuildInputAssetProperty(mcListView, InputActionAssetProperty, playerController);
 
             var foldout = new Foldout()
             {
@@ -36,7 +50,50 @@ namespace Assets.Scripts
             return root;
         }
 
-        private VisualElement BuildInputAssetProperty(SerializedProperty inputAsset, PlayerController controller)
+        private void BuildInputAssetProperty(MultiColumnListView listView, SerializedProperty inputAsset, PlayerController controller)
+        {
+            if (inputAsset.objectReferenceValue == null) return;
+
+            var serializedInputAsset = new SerializedObject(inputAsset.objectReferenceValue);
+            var inputAssetObject = inputAsset.objectReferenceValue as InputActionAsset;
+
+            var cols = listView.columns;
+            cols["input-handler"].makeCell = () => new Label();
+            cols["action-map"].makeCell = () => new DropdownField();
+            cols["automatic-validation"].makeCell = () => new Toggle();
+
+            cols["input-handler"].bindCell = (VisualElement element, int index) =>
+            {
+                var label = element as Label;
+                label.viewDataKey = $"{target.name} input-handler-label row.{index}";
+                label.text = controller.PlayerInputBinders[index].name;
+            };
+
+            cols["action-map"].bindCell = (VisualElement element, int index) =>
+            {
+                var dropdown = element as DropdownField;
+                dropdown.viewDataKey = $"{target.name} action-map-dropdown row.{index}";
+                dropdown.choices = inputAssetObject.actionMaps.Select(x => x.name).ToList();
+                dropdown.RegisterValueChangedCallback(evt =>
+                {
+                    controller.PlayerInputBinders[index].ActionMap = inputAssetObject.FindActionMap(evt.newValue);
+                    controller.PlayerMovementController.ValidateInputs();
+                });
+            };
+
+            cols["automatic-validation"].bindCell = (VisualElement element, int index) =>
+            {
+                var toggle = element as Toggle;
+                toggle.viewDataKey = $"{target.name} automatic-validation row.{index}";
+                toggle.SetValueWithoutNotify(controller.PlayerInputBinders[index].AutomaticValidation);
+                toggle.RegisterValueChangedCallback(evt =>
+                {
+                    controller.PlayerInputBinders[index].AutomaticValidation = evt.newValue;
+                });
+            };
+        }
+        
+        /*private VisualElement BuildInputAssetProperty(SerializedProperty inputAsset, PlayerController controller)
         {
             var root = new VisualElement();
 
@@ -52,16 +109,11 @@ namespace Assets.Scripts
                 controller.MovementActionMapName = evt.newValue;
             });
 
-            /*actionMapsDropdown.RegisterValueChangedCallback(evt =>
-            {
-                Debug.Log($"{target.name} input action asset dropdown field value changed to: {evt.newValue}!");
-            });*/
-
             root.Add(actionMapsDropdown);
 
             return root;
-        }
+        }*/
     }
 
 #endif
-}
+        }

@@ -13,10 +13,6 @@ using UnityEngine.InputSystem.Utilities;
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider), typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
 {
-    private InputEventHandler<InputEvent> _movementInputHandler = null;
-    
-    public string MovementActionMapName;
-
     [SerializeField]
     private Rigidbody _rigidbody = null;
     [SerializeField]
@@ -40,20 +36,16 @@ public class PlayerController : MonoBehaviour
     [Header("Control system")]
     [SerializeField]
     private InputActionAsset _inputAsset = null;
-
-    [Header("UIToolkit test")]
-    public IReadOnlyList<string> InspectorList = new List<string>()
-    {
-        "Value1", "Value2", "Value3"
-    };
-    //public ReadOnlyArray<string> InspectorReadOnlyArray = new ReadOnlyArray<string>(InspectorList.ToArray());
-    public int Count = 4;
+    [SerializeField]
+    //private InputEventHandler<InputEvent> _movementInputHandler = null;
+    private List<PlayerInputBinder> _playerInputBinders = null;
+    [SerializeField]
+    private PlayerMovementController _playerMovementController = null;
+    public List<PlayerInputBinder> PlayerInputBinders { get => _playerInputBinders; }
+    public PlayerMovementController PlayerMovementController { get => _playerMovementController; }
 
     private void Start()
     {
-        _movementInputHandler = new PlayerInputHandler<InputEvent>(_inputAsset.FindActionMap(MovementActionMapName)); //change
-        _movementInputHandler.Initialize();
-
         InitializeBody();
         InitializeDebugObjects();
     }

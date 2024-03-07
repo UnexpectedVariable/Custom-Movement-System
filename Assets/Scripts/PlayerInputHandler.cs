@@ -21,6 +21,7 @@ namespace Assets.Scripts
 
         public override void Initialize()
         {
+            OnInput += RaiseInputEvent;
             InitializeInputMaps();
         }
         public override void Clear()
@@ -30,8 +31,7 @@ namespace Assets.Scripts
 
         private void OnPlayerInputTriggered(InputAction.CallbackContext callbackContext)
         {
-            // input = new T { Context = callbackContext };
-            EventBus<T>.Raise(new T { Context = callbackContext });
+            HandleEvent(this, new T { InputContext = callbackContext });
             Debug.Log($"Action of type {typeof(T)} triggered!\n" + $"Value type: {callbackContext.valueType}");
         }
 
@@ -45,6 +45,11 @@ namespace Assets.Scripts
         {
             //InputUtil.FindMap("Player Movement").actionTriggered -= OnPlayerInputTriggered;
             Map.actionTriggered -= OnPlayerInputTriggered;
+        }
+
+        private void RaiseInputEvent(object o, T eventData)
+        {
+            EventBus<T>.Raise(eventData);
         }
     }
 }

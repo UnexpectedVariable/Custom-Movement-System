@@ -1,2 +1,11 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="Action maps binds panel" view-data-key="PlayerControllerActionMaps_pane" style="flex-grow: 1;">
+        <ui:MultiColumnListView reorderable="true" name="MultiColumnListView" show-add-remove-footer="false" style="flex-direction: row; flex-wrap: nowrap; flex-basis: auto;">
+            <ui:Columns>
+                <ui:Column name="input-handler" title="Input Handler" />
+                <ui:Column name="action-map" title="Action Map" />
+                <ui:Column name="automatic-validation" title="Automatic validation" />
+            </ui:Columns>
+        </ui:MultiColumnListView>
+    </ui:VisualElement>
 </ui:UXML>

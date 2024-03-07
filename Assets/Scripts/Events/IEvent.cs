@@ -14,7 +14,7 @@ namespace Assets.Scripts.Events
 
     public class InputEvent : IEvent
     {
-        public InputAction.CallbackContext Context { get; set; }
+        public InputAction.CallbackContext InputContext { get; set; }
     }
 
     public class CollisionEvent : IEvent

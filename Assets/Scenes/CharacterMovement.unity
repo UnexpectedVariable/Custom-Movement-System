@@ -498,6 +498,37 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
+--- !u!1 &702537884
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 702537885}
+  m_Layer: 0
+  m_Name: CustomInspector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &702537885
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 702537884}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -51.81634, y: 2.3391767, z: -19.595467}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1299372532
 GameObject:
   m_ObjectHideFlags: 0
@@ -631,14 +662,11 @@ MonoBehaviour:
   _ySensitivity: 50
   _yUpperRotationMax: 295
   _yLowerRotationMax: 35
-  _comRepresentation: {fileID: 1434411313}
   _inputAsset: {fileID: -944628639613478452, guid: b96739a12084a0e4887f5f1677a42d68,
     type: 3}
-  InspectorList:
-  - Value1
-  - Value2
-  - Value3
-  Count: 4
+  _playerInputBinders:
+  - {fileID: 11400000, guid: 30e63095bf589984bbdbc2e9100f65ed, type: 2}
+  _playerMovementController: {fileID: 1299372540}
 --- !u!114 &1299372538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1210,3 +1238,4 @@ SceneRoots:
   - {fileID: 1299372536}
   - {fileID: 259935677}
   - {fileID: 1402938695}
+  - {fileID: 702537885}

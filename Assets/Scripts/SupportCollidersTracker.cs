@@ -13,7 +13,7 @@ using IObserved = Assets.Scripts.IObserved<Assets.Scripts.SupportCollidersTracke
 namespace Assets.Scripts
 {
     [RequireComponent(typeof(Rigidbody))]
-    internal class SupportCollidersTracker : MonoBehaviour, IObserved
+    public class SupportCollidersTracker : MonoBehaviour, IObserved
     {
         public List<Collider> SupportColliders {get; private set;}
         private List<IObserver> _observers = null;
@@ -30,7 +30,7 @@ namespace Assets.Scripts
 
         private void Start()
         {
-            Attach(GetComponents<IObserver>().ToList());
+            AttachNeighbourObservers();
         }
 
         private bool ProvidesSupport(Collision collision)
@@ -123,6 +123,30 @@ namespace Assets.Scripts
         {
             Debug.Log($"{gameObject.name} support tracker detached {observers.Count} observers");
             throw new NotImplementedException();
+        }
+
+        private IObserver[] SearchNeighbourObservers()
+        {
+            return GetComponents<IObserver>();
+        }
+
+        private bool AttachNeighbourObservers()
+        {
+            var observers = SearchNeighbourObservers();
+            if (observers == null || observers.Length == 0) return false;
+
+            Attach(SearchNeighbourObservers());
+            return true;
+        }
+
+        private void OnEnable()
+        {
+            AttachNeighbourObservers();
+        }
+
+        private void OnDisable()
+        {
+            _observers.Clear();
         }
     }
 }
