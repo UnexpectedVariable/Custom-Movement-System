@@ -1,10 +1,4 @@
 ﻿using Assets.Scripts.Events;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -25,14 +19,14 @@ namespace Assets.Scripts.Input.Player
                 _actionMap = value;
                 _remapPending = true;
 
-                if(AutomaticValidation) ValidateActionMap();
+                if (AutomaticValidation) ValidateActionMap();
             }
         }
 
         public PlayerInputBinder(InputActionMap actionMap)
         {
             _actionMap = actionMap;
-            
+
             InitializeHandler();
         }
 
@@ -40,13 +34,13 @@ namespace Assets.Scripts.Input.Player
         {
             if (!_remapPending) return;
             _remapPending = false;
-            
+
             InitializeHandler();
         }
 
         private void InitializeHandler()
         {
-            if(_actionMap == null) return;
+            if (_actionMap == null) return;
 
             _inputHandler?.Clear();
             _inputHandler = new PlayerInputHandler<InputEvent>(_actionMap);

@@ -6,7 +6,6 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Assets.Scripts.MovementSystem;
 
 namespace Assets.Scripts.MovementSystem.Player
 {
@@ -23,7 +22,7 @@ namespace Assets.Scripts.MovementSystem.Player
             get
             {
                 var movementVector = Vector3.zero;
-                foreach(var movementPair in _movementActuationMap)
+                foreach (var movementPair in _movementActuationMap)
                 {
                     if (movementPair.Value == null) continue;
                     movementVector += GetMovementDirection(movementPair.Key);
@@ -76,7 +75,7 @@ namespace Assets.Scripts.MovementSystem.Player
 
         private void FixedUpdate()
         {
-            if(_isMovementPossible)
+            if (_isMovementPossible)
             {
                 _rb.AddForce(TotalMovementVector, ForceMode.Force);
             }
@@ -103,7 +102,7 @@ namespace Assets.Scripts.MovementSystem.Player
         private bool ActuateMovement(InputAction.CallbackContext context)
         {
             var type = MovementUtil.GetMovementType(context.action.name);
-            if(type == null) return false;
+            if (type == null) return false;
 
             _movementActuationMap[type.Value] = context.action;
             return true;
@@ -141,28 +140,28 @@ namespace Assets.Scripts.MovementSystem.Player
         public void Handle(SupportCollidersTracker observed)
         {
             var supportCount = observed.SupportColliders.Count;
-            if(_isMovementPossible)
+            if (_isMovementPossible)
             {
-                if(supportCount == 0) _isMovementPossible = false;
+                if (supportCount == 0) _isMovementPossible = false;
             }
             else
             {
-                if(supportCount > 0) _isMovementPossible = true;
+                if (supportCount > 0) _isMovementPossible = true;
             }
         }
 
         public void ValidateInputs(InputActionMap actionMap)
         {
-            if(_movementActuationMap == null)  return;
+            if (_movementActuationMap == null) return;
 
-            for(int i = 0; i < _movementActuationMap.Count; i++)
+            for (int i = 0; i < _movementActuationMap.Count; i++)
             {
                 var movementPair = _movementActuationMap.ElementAt(i);
                 if (movementPair.Value == null) continue;
 
                 foreach (var binding in movementPair.Value.bindings)
                 {
-                    if(actionMap.bindings.Contains(binding)) continue;
+                    if (actionMap.bindings.Contains(binding)) continue;
                     _movementActuationMap[movementPair.Key] = null;
                 }
             }

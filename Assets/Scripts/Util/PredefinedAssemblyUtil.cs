@@ -31,7 +31,7 @@ namespace Assets.Scripts.Util
 
             Dictionary<AssemblyType, Type[]> assemblyTypes = new Dictionary<AssemblyType, Type[]>();
             List<Type> types = new List<Type>();
-            foreach (var assembly in assemblies) 
+            foreach (var assembly in assemblies)
             {
                 AssemblyType? assemblyType = GetAssemblyType(assembly.GetName().Name);
                 if (assemblyType == null) continue;
@@ -51,7 +51,7 @@ namespace Assets.Scripts.Util
             if (assembly == null) return;
             foreach (var assemblyType in assembly)
             {
-                if(assemblyType != interfaceType && interfaceType.IsAssignableFrom(assemblyType)) types.Add(assemblyType);
+                if (assemblyType != interfaceType && interfaceType.IsAssignableFrom(assemblyType)) types.Add(assemblyType);
             }
         }
     }

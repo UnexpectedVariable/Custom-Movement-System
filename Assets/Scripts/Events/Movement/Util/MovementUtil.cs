@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Assets.Scripts.Events.Movement.Util
+﻿namespace Assets.Scripts.Events.Movement.Util
 {
     public static class MovementUtil
     {
@@ -32,7 +26,7 @@ namespace Assets.Scripts.Events.Movement.Util
             };
         }
 
-        public static string GetMovementName(MovementType movementType) 
+        public static string GetMovementName(MovementType movementType)
         {
             return movementType switch
             {

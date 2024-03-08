@@ -1,8 +1,6 @@
 ﻿using System.Linq;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
@@ -21,7 +19,7 @@ namespace Assets.Scripts.Player
             var playerController = (PlayerController)target;
 
 #if UNITY_EDITOR
-            if(m_UXML) m_UXML.CloneTree(root);
+            if (m_UXML) m_UXML.CloneTree(root);
             else
             {
                 var uxmlGuid = AssetDatabase.FindAssets("PlayerControllerEditor", new string[] { "Assets/ToolingUI/UXML" });
@@ -93,7 +91,7 @@ namespace Assets.Scripts.Player
                 });
             };
         }
-        
+
         /*private VisualElement BuildInputAssetProperty(SerializedProperty inputAsset, PlayerController controller)
         {
             var root = new VisualElement();
@@ -117,4 +115,4 @@ namespace Assets.Scripts.Player
     }
 
 #endif
-        }
+}

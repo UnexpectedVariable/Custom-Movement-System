@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-
-using IObserver = Assets.Scripts.Util.Observer.IObserver<Assets.Scripts.MovementSystem.SupportCollidersTracker>;
 using IObserved = Assets.Scripts.Util.Observer.IObserved<Assets.Scripts.MovementSystem.SupportCollidersTracker>;
+using IObserver = Assets.Scripts.Util.Observer.IObserver<Assets.Scripts.MovementSystem.SupportCollidersTracker>;
 
 namespace Assets.Scripts.MovementSystem
 {
     [RequireComponent(typeof(Rigidbody))]
     public class SupportCollidersTracker : MonoBehaviour, IObserved
     {
-        public List<Collider> SupportColliders {get; private set;}
+        public List<Collider> SupportColliders { get; private set; }
         private List<IObserver> _observers = null;
         //private EventBinding<>
         [SerializeField]
@@ -50,7 +49,7 @@ namespace Assets.Scripts.MovementSystem
 
         private void OnCollisionStay(Collision collision)
         {
-            if(SupportColliders.Contains(collision.collider))
+            if (SupportColliders.Contains(collision.collider))
             {
                 if (!ProvidesSupport(collision))
                 {

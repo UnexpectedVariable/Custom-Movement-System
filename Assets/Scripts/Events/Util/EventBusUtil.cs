@@ -25,7 +25,7 @@ namespace Assets.Scripts.Events.Util
         static void OnPlayModeStateChanged(PlayModeStateChange state)
         {
             PlayModeState = state;
-            if(state == PlayModeStateChange.ExitingPlayMode)
+            if (state == PlayModeStateChange.ExitingPlayMode)
             {
                 ClearAllBuses();
             }
@@ -44,7 +44,7 @@ namespace Assets.Scripts.Events.Util
             List<Type> eventBusTypes = new List<Type>();
 
             var typedef = typeof(EventBus<>);
-            foreach (var type in EventTypes) 
+            foreach (var type in EventTypes)
             {
                 var busType = typedef.MakeGenericType(type);
                 eventBusTypes.Add(busType);
@@ -57,7 +57,7 @@ namespace Assets.Scripts.Events.Util
         public static void ClearAllBuses()
         {
             Debug.Log($"Clearing all buses...");
-            for(int i = 0; i < EventBusTypes.Count; i++)
+            for (int i = 0; i < EventBusTypes.Count; i++)
             {
                 var clearMethod = EventBusTypes[i].GetMethod("Clear", BindingFlags.Static | BindingFlags.NonPublic);
                 clearMethod.Invoke(null, null);

@@ -1,15 +1,9 @@
-﻿using Assets.Scripts.Events;
-using Assets.Scripts.Util;
+﻿using Assets.Scripts.Util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Experimental.Playables;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Utilities;
 
 namespace Assets.Scripts.Input.Util
 {
@@ -39,7 +33,7 @@ namespace Assets.Scripts.Input.Util
                 var actionMapsValue = actionMapsProperty
                     .GetValue(ia_asset);
                 if (actionMapsValue == null) continue;
-                foreach(var map in GetElement((IEnumerable<object>)actionMapsValue))
+                foreach (var map in GetElement((IEnumerable<object>)actionMapsValue))
                 {
                     actionMaps.Add(map);
                 }
@@ -50,7 +44,7 @@ namespace Assets.Scripts.Input.Util
 
         private static void InitializeActionMaps()
         {
-            foreach(var map in InputActionMaps)
+            foreach (var map in InputActionMaps)
             {
                 (map as InputActionMap).Enable();
             }
@@ -70,7 +64,7 @@ namespace Assets.Scripts.Input.Util
         {
             return (InputActionMap)FindMapByObject(name);
         }
-        
+
         public static InputActionMap FindMap(Guid id)
         {
             return (InputActionMap)FindMapByObject(id);
@@ -88,7 +82,7 @@ namespace Assets.Scripts.Input.Util
             }
             return null;
         }
-        
+
         private static object FindMapByObject(object targetValue)
         {
             var objectType = targetValue.GetType();
@@ -97,16 +91,16 @@ namespace Assets.Scripts.Input.Util
                 var fields = map.GetType().GetFields();
                 foreach (var field in fields)
                 {
-                    if(field.FieldType == objectType)
+                    if (field.FieldType == objectType)
                     {
-                        if(field.GetValue(map).Equals(targetValue)) return map;
+                        if (field.GetValue(map).Equals(targetValue)) return map;
                     }
                 }
 
                 var properties = map.GetType().GetProperties();
                 foreach (var property in properties)
                 {
-                    if(property.PropertyType == objectType)
+                    if (property.PropertyType == objectType)
                     {
                         if (property.GetValue(map).Equals(targetValue)) return map;
                     }

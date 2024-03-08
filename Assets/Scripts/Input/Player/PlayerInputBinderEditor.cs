@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using UnityEditor;
-using UnityEngine.InputSystem.XR;
+using UnityEditor.UIElements;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 
 namespace Assets.Scripts.Input.Player
 {
@@ -60,7 +55,7 @@ namespace Assets.Scripts.Input.Player
         {
             var actionMapsDropdown = (evt.target as VisualElement).parent.Q<DropdownField>();
 
-            if(evt.changedProperty.objectReferenceValue == null)
+            if (evt.changedProperty.objectReferenceValue == null)
             {
                 if (actionMapsDropdown.choices.Count == 0) return;
                 actionMapsDropdown.choices.Clear();

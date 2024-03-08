@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts.Events;
-using Assets.Scripts.MovementSystem;
 using System;
 using UnityEngine;
 

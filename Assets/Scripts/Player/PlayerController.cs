@@ -1,16 +1,8 @@
-using Assets.Scripts;
-using Assets.Scripts.Events;
 using Assets.Scripts.Input.Player;
 using Assets.Scripts.MovementSystem.Player;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Utilities;
 
 namespace Assets.Scripts.Player
 {
@@ -23,7 +15,7 @@ namespace Assets.Scripts.Player
         [Header("Debug")]
         private GameObject _comRepresentation = null;
 
-        [Header("Control system")]
+        [Header("Movement&Control System")]
         [SerializeField]
         private InputActionAsset _inputAsset = null;
         [SerializeField]

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Assets.Scripts.Util
@@ -29,7 +26,7 @@ namespace Assets.Scripts.Util
 
         public bool Add(T trackable)
         {
-            if(!trackPredicate.Invoke(trackable)) return false;
+            if (!trackPredicate.Invoke(trackable)) return false;
             Debug.Log($"Object of type {typeof(T)} added to tracker");
             Tracked.Add(trackable);
             return true;
@@ -42,8 +39,8 @@ namespace Assets.Scripts.Util
         public bool Validate(T trackable)
         {
             Debug.Log($"Validating object of type {typeof(T)} in tracker");
-            if(!Tracked.Contains(trackable)) throw new ArgumentException("Argument to validate not found among trackable objects");
-            if(trackPredicate.Invoke(trackable)) return true;
+            if (!Tracked.Contains(trackable)) throw new ArgumentException("Argument to validate not found among trackable objects");
+            if (trackPredicate.Invoke(trackable)) return true;
             Remove(trackable);
             return false;
         }

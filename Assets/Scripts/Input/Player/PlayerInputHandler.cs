@@ -1,10 +1,4 @@
 ﻿using Assets.Scripts.Events;
-using Assets.Scripts.Input.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
