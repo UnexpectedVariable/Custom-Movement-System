@@ -546,6 +546,7 @@ GameObject:
   - component: {fileID: 1299372537}
   - component: {fileID: 1299372540}
   - component: {fileID: 1299372541}
+  - component: {fileID: 1299372542}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -657,11 +658,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 1299372539}
-  _camera: {fileID: 451920900}
-  _xSensitivity: 50
-  _ySensitivity: 50
-  _yUpperRotationMax: 295
-  _yLowerRotationMax: 35
   _inputAsset: {fileID: -944628639613478452, guid: b96739a12084a0e4887f5f1677a42d68,
     type: 3}
   _playerInputBinders:
@@ -753,6 +749,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxSupportAngle: 45
+--- !u!114 &1299372542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299372532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18c6da9c172a2b4fbb37a51a781d29f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _xSensitivity: 50
+  _ySensitivity: 50
+  _yUpperRotationMax: 1
+  _yLowerRotationMax: 1
+  _head: {fileID: 0}
+  _camera: {fileID: 0}
 --- !u!1 &1402938690
 GameObject:
   m_ObjectHideFlags: 0

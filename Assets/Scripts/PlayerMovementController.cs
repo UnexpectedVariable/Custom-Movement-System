@@ -19,15 +19,8 @@ namespace Assets.Scripts
     {
         private EventBinding<InputEvent> _movementEventBinding;
         private Rigidbody _rb;
-        //private Vector3 _movementVector;
 
         private Dictionary<MovementUtil.MovementType, InputAction> _movementActuationMap;
-
-        /*public Vector3 MovementVector
-        {
-            get => _movementVector;
-            private set => _movementVector = value;
-        }*/
 
         public Vector3 TotalMovementVector
         {
@@ -56,10 +49,10 @@ namespace Assets.Scripts
         {
             _movementEventBinding = new EventBinding<InputEvent>(HandleMovement);
             _rb ??= GetComponent<Rigidbody>();
-            InitializeMovementMap();
+            InitializeActuationtMap();
         }
 
-        private void InitializeMovementMap()
+        private void InitializeActuationtMap()
         {
             var MovementTypes = Enum.GetValues(typeof(MovementUtil.MovementType));
             int capacity = MovementTypes.Length;
@@ -101,7 +94,6 @@ namespace Assets.Scripts
         {
             var context = e.InputContext;
             if (context.valueType != typeof(Single)) return;
-
 
             Debug.Log("Movement input detected!");
             _ = context.phase switch
