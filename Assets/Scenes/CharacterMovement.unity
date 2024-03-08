@@ -763,10 +763,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _xSensitivity: 50
   _ySensitivity: 50
-  _yUpperRotationMax: 1
-  _yLowerRotationMax: 1
-  _head: {fileID: 0}
-  _camera: {fileID: 0}
+  _yUpperRotationMax: 290
+  _yLowerRotationMax: 45
+  _head: {fileID: 182030772}
+  _camera: {fileID: 451920898}
 --- !u!1 &1402938690
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Assets.Scripts.MovementSystem;
 
-namespace Assets.Scripts.Player.SpatialControllers
+namespace Assets.Scripts.MovementSystem.Player
 {
     [RequireComponent(typeof(Rigidbody))]
     public class PlayerMovementController : MonoBehaviour, IMovementController, Util.Observer.IObserver<SupportCollidersTracker>

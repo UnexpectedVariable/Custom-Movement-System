@@ -8,7 +8,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Assets.Scripts.Player.Input
+namespace Assets.Scripts.Input.Player
 {
     internal class PlayerInputHandler<T> : InputEventHandler<T> where T : InputEvent, new()
     {

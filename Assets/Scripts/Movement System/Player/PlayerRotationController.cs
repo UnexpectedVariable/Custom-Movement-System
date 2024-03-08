@@ -3,7 +3,7 @@ using Assets.Scripts.MovementSystem;
 using System;
 using UnityEngine;
 
-namespace Assets.Scripts.Player.SpatialControllers
+namespace Assets.Scripts.MovementSystem.Player
 {
     [RequireComponent(typeof(Rigidbody))]
     public class PlayerRotationController : MonoBehaviour, IRotationController

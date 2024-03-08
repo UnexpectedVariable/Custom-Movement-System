@@ -1,7 +1,7 @@
 using Assets.Scripts;
 using Assets.Scripts.Events;
-using Assets.Scripts.Player.Input;
-using Assets.Scripts.Player.SpatialControllers;
+using Assets.Scripts.Input.Player;
+using Assets.Scripts.MovementSystem.Player;
 using System;
 using System.Collections;
 using System.Collections.Generic;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Assets.Scripts.Player.Input
+namespace Assets.Scripts.Input.Player
 {
     [CreateAssetMenu(fileName = "Player Input Binder", menuName = "Input/Binders/Player Input Binder", order = 0)]
     public class PlayerInputBinder : ScriptableObject

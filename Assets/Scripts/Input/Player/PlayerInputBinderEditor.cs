@@ -9,7 +9,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
 
-namespace Assets.Scripts.Player.Input
+namespace Assets.Scripts.Input.Player
 {
     [CustomEditor(typeof(PlayerInputBinder))]
     public class PlayerInputBinderEditor : Editor
