@@ -1,0 +1,17 @@
+{
+  "(Stone, Wood)": 0.4,
+  "(Stone, Metal)": 0.3,
+  "(Stone, Rubber)": 0.7,
+  "(Stone, Fabric)": 0.6,
+  "(Stone, Ice)": 0.02,
+  "(Wood, Metal)": 0.2,
+  "(Wood, Rubber)": 0.5,
+  "(Wood, Fabric)": 0.4,
+  "(Wood, Ice)": 0.1,
+  "(Metal, Rubber)": 0.4,
+  "(Metal, Fabric)": 0.3,
+  "(Metal, Ice)": 0.01,
+  "(Rubber, Fabric)": 0.8,
+  "(Rubber, Ice)": 0.03,
+  "(Fabric, Ice)": 0.04
+}

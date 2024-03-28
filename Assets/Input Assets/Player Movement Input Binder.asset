@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 09b436358a44d4e449847c92e4099c43, type: 3}
+  m_Script: {fileID: 11500000, guid: 27db7e3251a91384b971579b53d8cff4, type: 3}
   m_Name: Player Movement Input Binder
   m_EditorClassIdentifier: 
-  _actionAsset: {fileID: -944628639613478452, guid: b96739a12084a0e4887f5f1677a42d68,
-    type: 3}
   AutomaticValidation: 1

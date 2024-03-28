@@ -27,7 +27,8 @@ namespace Assets.Scripts.MovementSystem.Player
                     if (movementPair.Value == null) continue;
                     movementVector += GetMovementDirection(movementPair.Key);
                 }
-                return movementVector * _velocityMultiplier;
+                //return movementVector * _velocityMultiplier;
+                return movementVector * (_movementActuationMap[MovementUtil.MovementType.Up] == null ? _velocityMultiplier : _jumpVelocityMultiplier);
             }
         }
 
@@ -36,6 +37,8 @@ namespace Assets.Scripts.MovementSystem.Player
         private float _maxVelocity = 1.0f;
         [SerializeField]
         private float _velocityMultiplier = 1.0f;
+        [SerializeField]
+        private float _jumpVelocityMultiplier = 1.0f;
         [SerializeField]
         private bool _isMovementPossible = default;
 

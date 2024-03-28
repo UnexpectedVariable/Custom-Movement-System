@@ -34,7 +34,7 @@ namespace Assets.Scripts.MovementSystem
             foreach (ContactPoint contact in collision.contacts)
             {
                 Vector3 innerNormal = contact.normal * -1;
-                if (Vector3.Angle(Physics.gravity, innerNormal) < _maxSupportAngle) return true;
+                if (Vector3.Angle(UnityEngine.Physics.gravity, innerNormal) < _maxSupportAngle) return true;
             }
             return false;
         }

@@ -1,4 +1,6 @@
-﻿namespace Assets.Scripts.Events
+﻿using Assets.Scripts.Util;
+
+namespace Assets.Scripts.Events
 {
     internal interface IEventHandler<T> : IHandler where T : IEvent
     {
