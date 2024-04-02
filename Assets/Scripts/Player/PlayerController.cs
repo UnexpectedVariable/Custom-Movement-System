@@ -3,10 +3,12 @@ using Assets.Scripts.MovementSystem.Player;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+#pragma warning disable 0414
 
 namespace Assets.Scripts.Player
 {
     [RequireComponent(typeof(Rigidbody))]
+    [DisallowMultipleComponent]
     public class PlayerController : MonoBehaviour
     {
         [SerializeField]

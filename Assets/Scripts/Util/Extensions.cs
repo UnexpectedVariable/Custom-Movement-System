@@ -13,5 +13,15 @@ namespace Assets.Scripts.Util
         {
             return (pair.Item2,  pair.Item1);
         }
+
+        public static Vector3 Sum(this IEnumerable<Vector3> source)
+        {
+            Vector3 sum = Vector3.zero;
+            foreach (var item in source)
+            {
+                sum += item;
+            }
+            return sum;
+        }
     }
 }

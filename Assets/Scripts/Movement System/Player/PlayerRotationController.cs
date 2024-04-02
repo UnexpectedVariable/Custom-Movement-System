@@ -5,6 +5,7 @@ using UnityEngine;
 namespace Assets.Scripts.MovementSystem.Player
 {
     [RequireComponent(typeof(Rigidbody))]
+    [DisallowMultipleComponent]
     public class PlayerRotationController : MonoBehaviour, IRotationController
     {
         private EventBinding<InputEvent> _rotationEventBinding;

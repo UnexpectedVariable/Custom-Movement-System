@@ -10,6 +10,7 @@ using UnityEngine.InputSystem;
 namespace Assets.Scripts.MovementSystem.Player
 {
     [RequireComponent(typeof(Rigidbody))]
+    [DisallowMultipleComponent]
     public class PlayerMovementController : MonoBehaviour, IMovementController, Util.Observer.IObserver<SupportCollidersTracker>
     {
         private EventBinding<InputEvent> _movementEventBinding;

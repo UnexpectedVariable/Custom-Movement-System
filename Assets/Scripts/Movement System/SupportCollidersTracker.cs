@@ -7,11 +7,11 @@ using IObserver = Assets.Scripts.Util.Observer.IObserver<Assets.Scripts.Movement
 namespace Assets.Scripts.MovementSystem
 {
     [RequireComponent(typeof(Rigidbody))]
+    [DisallowMultipleComponent]
     public class SupportCollidersTracker : MonoBehaviour, IObserved
     {
         public List<Collider> SupportColliders { get; private set; }
         private List<IObserver> _observers = null;
-        //private EventBinding<>
         [SerializeField]
         [Range(0f, 180f)]
         private float _maxSupportAngle = 0f;
@@ -116,7 +116,10 @@ namespace Assets.Scripts.MovementSystem
         public void Detach(ICollection<IObserver> observers)
         {
             Debug.Log($"{gameObject.name} support tracker detached {observers.Count} observers");
-            throw new NotImplementedException();
+            foreach (var observer in observers)
+            {
+                _observers.Remove(observer);
+            }
         }
 
         private IObserver[] SearchNeighbourObservers()
