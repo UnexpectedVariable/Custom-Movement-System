@@ -96,7 +96,7 @@ namespace Assets.Scripts.Physics.Friction
 
             var slippingForce = FrictionInteractionCalculator.CalculateSlippingForce(item, _manager, _surface);
             if (slippingForce == Vector3.zero) return;
-            //slip
+            throw new NotImplementedException("Slipping logic not implemented completely");
         }
 
         public void Inject(PhysicalAgentManager instance)

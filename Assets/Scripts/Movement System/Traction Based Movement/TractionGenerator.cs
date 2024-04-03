@@ -6,28 +6,28 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.Scripts.Movement_System
+namespace Assets.Scripts.Movement_System.Traction_Based
 {
     public class TractionGenerator : MonoBehaviour, Util.Observer.IObserver<SupportCollidersTracker>
     {
-        private bool _canGeneratePower = default;
-        private float _workOutput = 1f;
+        private bool _canGenerateForce = default;
+        //private float _forceOutput = 1f;
 
-        public bool CanGeneratePower
+        public bool CanGenerateForce
         {
-            get => _canGeneratePower;
+            get => _canGenerateForce;
         }
 
         public void Handle(SupportCollidersTracker observed)
         {
             var supportCount = observed.SupportColliders.Count;
-            if (_canGeneratePower)
+            if (_canGenerateForce)
             {
-                if (supportCount == 0) _canGeneratePower = false;
+                if (supportCount == 0) _canGenerateForce = false;
             }
             else
             {
-                if (supportCount > 0) _canGeneratePower = true;
+                if (supportCount > 0) _canGenerateForce = true;
             }
         }
     }

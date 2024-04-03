@@ -29,7 +29,7 @@ namespace Assets.Scripts.Player
 
         private void Start()
         {
-            InitializeDebugObjects();
+            //InitializeDebugObjects();
         }
 
         void InitializeDebugObjects()

@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Events;
 using Assets.Scripts.Events.Movement.Util;
+using Assets.Scripts.Physics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,13 @@ namespace Assets.Scripts.MovementSystem.Player
                     movementVector += GetMovementDirection(movementPair.Key);
                 }
                 //return movementVector * _velocityMultiplier;
-                return movementVector * (_movementActuationMap[MovementUtil.MovementType.Up] == null ? _velocityMultiplier : _jumpVelocityMultiplier);
+                //return movementVector * (_movementActuationMap[MovementUtil.MovementType.Up] == null ? _velocityMultiplier : _jumpVelocityMultiplier);
+                var forceVector = Vector3.zero;
+                foreach(var actuator in _legActuators) 
+                {
+                    forceVector += actuator.Actuate(movementVector);
+                }
+                return forceVector;
             }
         }
 
@@ -42,7 +49,8 @@ namespace Assets.Scripts.MovementSystem.Player
         private float _jumpVelocityMultiplier = 1.0f;
         [SerializeField]
         private bool _isMovementPossible = default;
-
+        [SerializeField]
+        private List<ForceGeneratorActuator> _legActuators = null;
 
         private void Awake()
         {
