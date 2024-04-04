@@ -11,18 +11,17 @@ namespace Assets.Scripts.Physics
     {
         [SerializeField]
         protected ForceGenerator _generator;
-        protected IEnumerable<bool> _actuationConditions;
 
         public Vector3 Actuate(Vector3 direction)
         {
-            if (!CanBeActuated(_actuationConditions)) return Vector3.zero;
+            if (!CanBeActuated(EnumerateConditions())) return Vector3.zero;
             return _generator.OutputForce(direction);
         }
 
         public bool TryActuate(Vector3 direction, out Vector3 result)
         {
             result = Vector3.zero;
-            if (!CanBeActuated(_actuationConditions)) return false;
+            if (!CanBeActuated(EnumerateConditions())) return false;
             result = _generator.OutputForce(direction);
             return true;
         }
@@ -35,5 +34,7 @@ namespace Assets.Scripts.Physics
             }
             return true;
         }
+
+        protected abstract IEnumerable<bool> EnumerateConditions();
     }
 }

@@ -18,16 +18,20 @@ namespace Assets.Scripts.Movement_System.Traction_Based_Movement.Muscle_Propelle
 
         private void Start()
         {
-            _actuationConditions = new List<bool>();
-            _actuationConditions.ToList().Add(_isLegSupported);
-
             _collidersTracker.Attach(this);
         }
 
         public void Handle(SupportCollidersTracker observed)
         {
             _isLegSupported = observed.SupportColliders.Count > 0;
-            _actuationConditions.ToList()[0] = _isLegSupported;
+        }
+
+        protected override IEnumerable<bool> EnumerateConditions()
+        {
+            return new bool[]
+            {
+                _isLegSupported
+            };
         }
     }
 }

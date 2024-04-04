@@ -553,6 +553,7 @@ GameObject:
   m_Component:
   - component: {fileID: 649409221}
   - component: {fileID: 649409222}
+  - component: {fileID: 649409223}
   m_Layer: 0
   m_Name: Leg
   m_TagString: Untagged
@@ -573,8 +574,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1315113521}
   - {fileID: 1556512094}
+  - {fileID: 1315113521}
   m_Father: {fileID: 1299372536}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &649409222
@@ -590,6 +591,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _forceMagnitude: 150
+--- !u!114 &649409223
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 649409220}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d799ca30fd53dc48999c65f1ad9727f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _generator: {fileID: 649409222}
+  _collidersTracker: {fileID: 1556512095}
+  _isLegSupported: 0
 --- !u!1 &702537884
 GameObject:
   m_ObjectHideFlags: 0
@@ -841,9 +857,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _maxVelocity: 5
-  _velocityMultiplier: 10
-  _jumpVelocityMultiplier: 150
-  _isMovementPossible: 0
+  _legActuators:
+  - {fileID: 649409223}
 --- !u!114 &1299372544
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -902,7 +917,7 @@ Transform:
   m_GameObject: {fileID: 1315113520}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.469, z: 0}
+  m_LocalPosition: {x: 0, y: -0.416, z: 0}
   m_LocalScale: {x: 0.2, y: 0.5, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1353,6 +1368,7 @@ GameObject:
   - component: {fileID: 1556512097}
   - component: {fileID: 1556512096}
   - component: {fileID: 1556512095}
+  - component: {fileID: 1556512100}
   m_Layer: 0
   m_Name: Foot
   m_TagString: Untagged
@@ -1368,9 +1384,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1556512093}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: -0.943, z: 0.112}
-  m_LocalScale: {x: 0.26182, y: 0.096568, z: 0.52939}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.935, z: 0.1}
+  m_LocalScale: {x: 0.25, y: 0.1, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 649409221}
@@ -1486,6 +1502,21 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1556512093}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!138 &1556512100
+FixedJoint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1556512093}
+  m_ConnectedBody: {fileID: 1299372539}
+  m_ConnectedArticulationBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_EnableCollision: 0
+  m_EnablePreprocessing: 1
+  m_MassScale: 1
+  m_ConnectedMassScale: 1
 --- !u!1 &1955719696
 GameObject:
   m_ObjectHideFlags: 0

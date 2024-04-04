@@ -16,7 +16,10 @@ namespace Assets.Scripts.Physics
 
         public virtual Vector3 OutputForce(Vector3 direction)
         {
-            float scalingFactorSqr = direction.sqrMagnitude / Mathf.Pow(ForceMagnitude, 2);
+            float scalingFactorSqr = Mathf.Pow(ForceMagnitude, 2) / direction.sqrMagnitude;
+            Debug.Log($"{gameObject.name} is outputing force:" +
+                $"\nScaling factor: {scalingFactorSqr}" +
+                $"\nOutput: {direction * scalingFactorSqr}");
             return direction * scalingFactorSqr;
         }
     }

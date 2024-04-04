@@ -12,7 +12,7 @@ namespace Assets.Scripts.MovementSystem.Player
 {
     [RequireComponent(typeof(Rigidbody))]
     [DisallowMultipleComponent]
-    public class PlayerMovementController : MonoBehaviour, IMovementController, Util.Observer.IObserver<SupportCollidersTracker>
+    public class PlayerMovementController : MonoBehaviour, IMovementController
     {
         private EventBinding<InputEvent> _movementEventBinding;
         private Rigidbody _rb;
@@ -31,11 +31,13 @@ namespace Assets.Scripts.MovementSystem.Player
                 }
                 //return movementVector * _velocityMultiplier;
                 //return movementVector * (_movementActuationMap[MovementUtil.MovementType.Up] == null ? _velocityMultiplier : _jumpVelocityMultiplier);
+                if (movementVector == Vector3.zero) return movementVector;
                 var forceVector = Vector3.zero;
                 foreach(var actuator in _legActuators) 
                 {
                     forceVector += actuator.Actuate(movementVector);
                 }
+                Debug.Log($"TotalMovementVector calculated to be {forceVector}");
                 return forceVector;
             }
         }
@@ -43,12 +45,6 @@ namespace Assets.Scripts.MovementSystem.Player
         [Header("Movement parameters")]
         [SerializeField]
         private float _maxVelocity = 1.0f;
-        [SerializeField]
-        private float _velocityMultiplier = 1.0f;
-        [SerializeField]
-        private float _jumpVelocityMultiplier = 1.0f;
-        [SerializeField]
-        private bool _isMovementPossible = default;
         [SerializeField]
         private List<ForceGeneratorActuator> _legActuators = null;
 
@@ -87,14 +83,9 @@ namespace Assets.Scripts.MovementSystem.Player
 
         private void FixedUpdate()
         {
-            if (_isMovementPossible)
-            {
-                _rb.AddForce(TotalMovementVector, ForceMode.Force);
-            }
-            else
-            {
-                Debug.Log($"{gameObject.name} is unable to move");
-            }
+            var forceVector = TotalMovementVector;
+            _rb.AddForce(forceVector, ForceMode.Force);
+            if (forceVector == Vector3.zero) Debug.Log($"{gameObject.name} movement vector is zero");
         }
 
         private void HandleMovement(object o, InputEvent e)
@@ -147,19 +138,6 @@ namespace Assets.Scripts.MovementSystem.Player
                 MovementUtil.MovementType.Down => _rb.transform.up * -1, //is it required?
                 _ => Vector3.zero
             };
-        }
-
-        public void Handle(SupportCollidersTracker observed)
-        {
-            var supportCount = observed.SupportColliders.Count;
-            if (_isMovementPossible)
-            {
-                if (supportCount == 0) _isMovementPossible = false;
-            }
-            else
-            {
-                if (supportCount > 0) _isMovementPossible = true;
-            }
         }
 
         public void ValidateInputs(InputActionMap actionMap)
