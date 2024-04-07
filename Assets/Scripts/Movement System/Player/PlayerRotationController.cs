@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Events;
 using System;
+using System.Threading;
 using UnityEngine;
 
 namespace Assets.Scripts.MovementSystem.Player
@@ -22,9 +23,9 @@ namespace Assets.Scripts.MovementSystem.Player
         private float _yLowerRotationMax = 1.0f;
 
         [SerializeField]
-        private GameObject _head = null;
+        private GameObject _rigHeadAimPivot = null;
         [SerializeField]
-        private GameObject _camera = null;
+        private GameObject _rigHeadAim = null;
 
 
         private void Awake()
@@ -67,19 +68,20 @@ namespace Assets.Scripts.MovementSystem.Player
 
         void RotateAlongY(Vector2 rotationVec)
         {
-            Vector3 yRotation = _head.transform.rotation.eulerAngles;
+            Vector3 yRotation = _rigHeadAimPivot.transform.rotation.eulerAngles;
             yRotation.x -= rotationVec.y; //minus because otherwise inverted
             Quaternion rotation = Quaternion.Euler(yRotation);
             if (!IsWithinRotationBoundaries(yRotation)) return;
-            _head.transform.rotation = Quaternion.RotateTowards(_head.transform.rotation, rotation, Time.deltaTime * _ySensitivity);
-            _camera.transform.rotation = _head.transform.rotation;
+            rotation = Quaternion.RotateTowards(_rigHeadAimPivot.transform.rotation, rotation, Time.deltaTime * _ySensitivity);
+            _rigHeadAimPivot.transform.rotation = rotation;
+            _rigHeadAim.transform.position = _rigHeadAimPivot.transform.position + _rigHeadAimPivot.transform.forward * 2;
         }
 
         bool IsWithinRotationBoundaries(Vector3 targetRotation)
         {
             if (IsWithinUpperRange(targetRotation))
             {
-                Debug.Log($"Target rotation is within upper range noundaries: {targetRotation.x > _yUpperRotationMax}");
+                Debug.Log($"Target rotation is within upper range boundaries: {targetRotation.x > _yUpperRotationMax}");
                 return targetRotation.x > _yUpperRotationMax;
             }
             Debug.Log($"Target rotation is within lower range");

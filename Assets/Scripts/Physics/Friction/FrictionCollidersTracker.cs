@@ -96,6 +96,7 @@ namespace Assets.Scripts.Physics.Friction
 
             var slippingForce = FrictionInteractionCalculator.CalculateSlippingForce(item, _manager, _surface);
             if (slippingForce == Vector3.zero) return;
+            Debug.Log($"{gameObject.name} is slipping!");
             throw new NotImplementedException("Slipping logic not implemented completely");
         }
 

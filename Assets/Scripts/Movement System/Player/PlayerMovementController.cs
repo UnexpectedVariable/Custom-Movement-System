@@ -29,8 +29,6 @@ namespace Assets.Scripts.MovementSystem.Player
                     if (movementPair.Value == null) continue;
                     movementVector += GetMovementDirection(movementPair.Key);
                 }
-                //return movementVector * _velocityMultiplier;
-                //return movementVector * (_movementActuationMap[MovementUtil.MovementType.Up] == null ? _velocityMultiplier : _jumpVelocityMultiplier);
                 if (movementVector == Vector3.zero) return movementVector;
                 var forceVector = Vector3.zero;
                 foreach(var actuator in _legActuators) 

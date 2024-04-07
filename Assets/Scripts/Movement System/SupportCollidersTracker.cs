@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.Util.Visitor;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using IObserved = Assets.Scripts.Util.Observer.IObserved<Assets.Scripts.MovementSystem.SupportCollidersTracker>;
@@ -6,7 +7,7 @@ using IObserver = Assets.Scripts.Util.Observer.IObserver<Assets.Scripts.Movement
 
 namespace Assets.Scripts.MovementSystem
 {
-    [RequireComponent(typeof(Rigidbody))]
+    //[RequireComponent(typeof(Rigidbody))]
     [DisallowMultipleComponent]
     public class SupportCollidersTracker : MonoBehaviour, IObserved
     {
@@ -22,16 +23,9 @@ namespace Assets.Scripts.MovementSystem
             _observers = new List<IObserver>();
         }
 
-        private void Start()
+        public bool ProvidesSupport(IEnumerable<ContactPoint> contacts)
         {
-            AttachNeighbourObservers();
-        }
-
-        private bool ProvidesSupport(Collision collision)
-        {
-            List<ContactPoint> contacts = new List<ContactPoint>(collision.contactCount);
-            collision.GetContacts(contacts);
-            foreach (ContactPoint contact in collision.contacts)
+            foreach (var contact in contacts)
             {
                 Vector3 innerNormal = contact.normal * -1;
                 if (Vector3.Angle(UnityEngine.Physics.gravity, innerNormal) < _maxSupportAngle) return true;
@@ -39,48 +33,14 @@ namespace Assets.Scripts.MovementSystem
             return false;
         }
 
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (ProvidesSupport(collision))
-            {
-                AddSupport(collision.collider);
-            }
-        }
-
-        private void OnCollisionStay(Collision collision)
-        {
-            if (SupportColliders.Contains(collision.collider))
-            {
-                if (!ProvidesSupport(collision))
-                {
-                    RemoveSupport(collision.collider);
-                }
-            }
-            else
-            {
-                if (ProvidesSupport(collision))
-                {
-                    AddSupport(collision.collider);
-                }
-            }
-        }
-
-        private void OnCollisionExit(Collision collision)
-        {
-            if (SupportColliders.Contains(collision.collider))
-            {
-                RemoveSupport(collision.collider);
-            }
-        }
-
-        private void AddSupport(Collider collider)
+        public void AddSupport(Collider collider)
         {
             Debug.Log($"Collider {collider.gameObject.name} added as support for {gameObject.name}");
             SupportColliders.Add(collider);
             Notify();
         }
 
-        private void RemoveSupport(Collider collider)
+        public void RemoveSupport(Collider collider)
         {
             Debug.Log($"Collider {collider.gameObject.name} removed from supports of {gameObject.name}");
             SupportColliders.Remove(collider);
@@ -120,30 +80,6 @@ namespace Assets.Scripts.MovementSystem
             {
                 _observers.Remove(observer);
             }
-        }
-
-        private IObserver[] SearchNeighbourObservers()
-        {
-            return GetComponents<IObserver>();
-        }
-
-        private bool AttachNeighbourObservers()
-        {
-            var observers = SearchNeighbourObservers();
-            if (observers == null || observers.Length == 0) return false;
-
-            Attach(SearchNeighbourObservers());
-            return true;
-        }
-
-        private void OnEnable()
-        {
-            AttachNeighbourObservers();
-        }
-
-        private void OnDisable()
-        {
-            _observers.Clear();
         }
     }
 }
