@@ -13,16 +13,21 @@ namespace Assets.Scripts.Player
     internal class PlayerCollisionHandler : MonoBehaviour
     {
         [SerializeField]
-        private Collider[] _supportColliders = null;
+        private Collider[] _footColliders = null;
 
-        private Dictionary<Collider, CollisionStrategy> _strategyMap = null;
+        private Dictionary<Collider, IEnumerable<ICollisionStrategy>> _strategyMap = null;
 
         private void Start()
         {
-            _strategyMap = new Dictionary<Collider, CollisionStrategy>();
+            _strategyMap = new();
 
-            _strategyMap.Add(_supportColliders[0], new SupportCollisionStrategy());
-            _strategyMap.Add(_supportColliders[1], new SupportCollisionStrategy());
+            List<ICollisionStrategy> footStrategies = new()
+            {
+                new SupportCollisionStrategy(),
+                new FrictionCollisionStrategy()
+            };
+            _strategyMap.Add(_footColliders[0], footStrategies);
+            _strategyMap.Add(_footColliders[1], footStrategies);
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -33,7 +38,10 @@ namespace Assets.Scripts.Player
             foreach (var pair in perColliderContacts)
             {
                 if(pair.contacts.Count() == 0) continue;
-                _strategyMap[pair.collider].HandleCollisionEnter(pair.contacts);
+                foreach(var strategy in _strategyMap[pair.collider])
+                {
+                    strategy.HandleCollisionEnter(pair.contacts);
+                }
             }
         }
 
@@ -44,7 +52,10 @@ namespace Assets.Scripts.Player
             foreach (var pair in perColliderContacts)
             {
                 if (pair.contacts.Count() == 0) continue;
-                _strategyMap[pair.collider].HandleCollisionStay(pair.contacts);
+                foreach (var strategy in _strategyMap[pair.collider])
+                {
+                    strategy.HandleCollisionStay(pair.contacts);
+                }
             }
         }
 
@@ -55,7 +66,10 @@ namespace Assets.Scripts.Player
             foreach (var pair in perColliderContacts)
             {
                 if (pair.contacts.Count() == 0) continue;
-                _strategyMap[pair.collider].HandleCollisionExit(pair.contacts);
+                foreach (var strategy in _strategyMap[pair.collider])
+                {
+                    strategy.HandleCollisionExit(pair.contacts);
+                }
             }
         }
 

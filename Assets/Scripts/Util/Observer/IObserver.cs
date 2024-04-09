@@ -2,6 +2,6 @@
 {
     public interface IObserver<T>
     {
-        public void Handle(T observed);
+        void Handle(T observed);
     }
 }

@@ -9,13 +9,14 @@ using UnityEngine;
 
 namespace Assets.Scripts.Physics.Friction
 {
-    [RequireComponent(typeof(Rigidbody))]
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(Surface))]
     internal class FrictionCollidersTracker : MonoBehaviour, IInjectable<PhysicalAgentManager>
     {
         private PhysicalAgentManager _manager = null;
         private Surface _surface = null;
-        public Queue<(Collision collision, Surface surface)> CollisionQueue { get; private set; }
+
+        public Queue<(IEnumerable<ContactPoint> contacts, Surface surface)> CollisionQueue { get; private set; }
 
         private void Start()
         {
@@ -24,33 +25,24 @@ namespace Assets.Scripts.Physics.Friction
             {
                 Debug.LogWarning($"{gameObject.name} friction tracker was unable to find {typeof(Surface)} component");
             }
+
+            CollisionQueue = new();
         }
 
-        private void OnCollisionEnter(Collision collision)
-        {
-            TryEnqueueCollision(collision);
-        }
-
-
-        private void OnCollisionStay(Collision collision)
-        {
-            TryEnqueueCollision(collision);
-        }
-
-        private bool TryEnqueueCollision(Collision collision)
+        public bool TryEnqueueCollision(Collider collider, IEnumerable<ContactPoint> contacts)
         {
             foreach (var item in CollisionQueue)
             {
-                if(item.collision.gameObject == collision.gameObject)
+                if (item.surface.gameObject == collider.gameObject)
                 {
-                    EnqueueCollision(collision, item.surface);
+                    EnqueueCollision(contacts, item.surface);
                     return true;
                 }
             }
             Surface surface = null;
-            if (HasFrictionPhysics(collision.gameObject, out surface))
+            if (HasFrictionPhysics(collider.gameObject, out surface))
             {
-                EnqueueCollision(collision, surface);
+                EnqueueCollision(contacts, surface);
                 return true;
             }
             return false;
@@ -62,10 +54,10 @@ namespace Assets.Scripts.Physics.Friction
             return surface != null;
         }
 
-        private void EnqueueCollision(Collision collision, Surface surface)
+        private void EnqueueCollision(IEnumerable<ContactPoint> contacts, Surface surface)
         {
-            Debug.Log($"{gameObject.name} friction tracker added collision with {collision.gameObject.name} to queue");
-            CollisionQueue.Enqueue((collision, surface));
+            Debug.Log($"{gameObject.name} friction tracker added collision with {surface.gameObject.name} to queue");
+            CollisionQueue.Enqueue((contacts, surface));
         }
 
         private void FixedUpdate()
@@ -77,7 +69,7 @@ namespace Assets.Scripts.Physics.Friction
                 return;
             }
 
-            (Collision collision, Surface surface) item = default;
+            (IEnumerable<ContactPoint> contacts, Surface surface) item = default;
             try
             {
                 item = CollisionQueue.Dequeue();
@@ -88,13 +80,13 @@ namespace Assets.Scripts.Physics.Friction
                 return;
             }
 
-            if (item.collision == null)
+            if (item.contacts == null)
             {
                 Debug.LogError($"{gameObject.name} friction tracker dequeued collision is null");
                 return;
             }
 
-            var slippingForce = FrictionInteractionCalculator.CalculateSlippingForce(item, _manager, _surface);
+            var slippingForce = FrictionInteractionCalculator.CalculateSlippingForce(item.contacts, item.surface, _manager, _surface);
             if (slippingForce == Vector3.zero) return;
             Debug.Log($"{gameObject.name} is slipping!");
             throw new NotImplementedException("Slipping logic not implemented completely");

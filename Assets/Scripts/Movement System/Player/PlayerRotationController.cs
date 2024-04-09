@@ -27,6 +27,7 @@ namespace Assets.Scripts.MovementSystem.Player
         [SerializeField]
         private GameObject _rigHeadAim = null;
 
+        public event EventHandler RotatedAlongX = null;
 
         private void Awake()
         {
@@ -64,6 +65,8 @@ namespace Assets.Scripts.MovementSystem.Player
             xRotation.y += rotationVec.x;
             Quaternion rotation = Quaternion.Euler(xRotation);
             _rb.MoveRotation(Quaternion.RotateTowards(_rb.rotation, rotation, Time.deltaTime * _xSensitivity));
+
+            RotatedAlongX?.Invoke(this, EventArgs.Empty);
         }
 
         void RotateAlongY(Vector2 rotationVec)

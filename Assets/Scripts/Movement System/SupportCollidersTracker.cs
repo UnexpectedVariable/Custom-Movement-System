@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Util.Visitor;
+﻿using Assets.Scripts.Util.Observer;
+using Assets.Scripts.Util.Visitor;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,12 +8,10 @@ using IObserver = Assets.Scripts.Util.Observer.IObserver<Assets.Scripts.Movement
 
 namespace Assets.Scripts.MovementSystem
 {
-    //[RequireComponent(typeof(Rigidbody))]
     [DisallowMultipleComponent]
-    public class SupportCollidersTracker : MonoBehaviour, IObserved
+    public class SupportCollidersTracker : ObservedMonoBehaviour<SupportCollidersTracker>
     {
         public List<Collider> SupportColliders { get; private set; }
-        private List<IObserver> _observers = null;
         [SerializeField]
         [Range(0f, 180f)]
         private float _maxSupportAngle = 0f;
@@ -20,7 +19,6 @@ namespace Assets.Scripts.MovementSystem
         private void Awake()
         {
             SupportColliders = new List<Collider>();
-            _observers = new List<IObserver>();
         }
 
         public bool ProvidesSupport(IEnumerable<ContactPoint> contacts)
@@ -47,38 +45,11 @@ namespace Assets.Scripts.MovementSystem
             Notify();
         }
 
-        public void Attach(IObserver observer)
-        {
-            Debug.Log($"{gameObject.name} support tracker attached new observer");
-            _observers.Add(observer);
-        }
-
-        public void Detach(IObserver observer)
-        {
-            Debug.Log($"{gameObject.name} support tracker detached observer");
-            _observers.Remove(observer);
-        }
-
-        public void Notify()
+        public override void Notify()
         {
             foreach (var observer in _observers)
             {
                 observer.Handle(this);
-            }
-        }
-
-        public void Attach(ICollection<IObserver> observers)
-        {
-            Debug.Log($"{gameObject.name} support tracker attached {observers.Count} new observers");
-            _observers.AddRange(observers);
-        }
-
-        public void Detach(ICollection<IObserver> observers)
-        {
-            Debug.Log($"{gameObject.name} support tracker detached {observers.Count} observers");
-            foreach (var observer in observers)
-            {
-                _observers.Remove(observer);
             }
         }
     }

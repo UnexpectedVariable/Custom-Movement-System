@@ -1,42 +1,38 @@
 ﻿using Assets.Scripts.Events;
 using Assets.Scripts.Events.Movement.Util;
 using Assets.Scripts.Physics;
+using Assets.Scripts.Util.Observer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static Assets.Scripts.Events.Movement.Util.MovementUtil;
 
 namespace Assets.Scripts.MovementSystem.Player
 {
     [RequireComponent(typeof(Rigidbody))]
     [DisallowMultipleComponent]
-    public class PlayerMovementController : MonoBehaviour, IMovementController
+    internal class PlayerMovementController : ObservedMonoBehaviour<PlayerMovementController>, IMovementController
     {
         private EventBinding<InputEvent> _movementEventBinding;
         private Rigidbody _rb;
 
-        private Dictionary<MovementUtil.MovementType, InputAction> _movementActuationMap;
+        private Dictionary<MovementType, InputAction> _movementActuationMap;
 
+        private Vector3 _movementVector = Vector3.zero;
+        private Vector3 _forceVector = Vector3.zero;
+
+        public Vector3 MovementVector => _movementVector;
         public Vector3 TotalMovementVector
         {
             get
             {
-                var movementVector = Vector3.zero;
-                foreach (var movementPair in _movementActuationMap)
-                {
-                    if (movementPair.Value == null) continue;
-                    movementVector += GetMovementDirection(movementPair.Key);
-                }
-                if (movementVector == Vector3.zero) return movementVector;
-                var forceVector = Vector3.zero;
-                foreach(var actuator in _legActuators) 
-                {
-                    forceVector += actuator.Actuate(movementVector);
-                }
-                Debug.Log($"TotalMovementVector calculated to be {forceVector}");
-                return forceVector;
+                if (_movementVector == Vector3.zero) return _movementVector;
+                CalculateForceVector();
+                Debug.Log($"TotalMovementVector calculated to be {_forceVector}");
+                return _forceVector;
             }
         }
 
@@ -105,7 +101,7 @@ namespace Assets.Scripts.MovementSystem.Player
             var type = MovementUtil.GetMovementType(context.action.name);
             if (type == null) return false;
 
-            _movementActuationMap[type.Value] = context.action;
+            ModifyActuationMap(type, context.action);
             return true;
         }
 
@@ -114,8 +110,14 @@ namespace Assets.Scripts.MovementSystem.Player
             var type = MovementUtil.GetMovementType(context.action.name);
             if (type == null) return false;
 
-            _movementActuationMap[type.Value] = null;
+            ModifyActuationMap(type, null);
             return true;
+        }
+
+        private void ModifyActuationMap(MovementType? type, InputAction action)
+        {
+            _movementActuationMap[type.Value] = action;
+            CalculateMovementVector();
         }
 
         private Vector3 GetMovementDirection(InputAction action)
@@ -128,12 +130,12 @@ namespace Assets.Scripts.MovementSystem.Player
         {
             return movementType switch
             {
-                MovementUtil.MovementType.Forward => _rb.transform.forward,
-                MovementUtil.MovementType.Backward => _rb.transform.forward * -1,
-                MovementUtil.MovementType.StrafeRight => _rb.transform.right,
-                MovementUtil.MovementType.StrafeLeft => _rb.transform.right * -1,
-                MovementUtil.MovementType.Up => _rb.transform.up,
-                MovementUtil.MovementType.Down => _rb.transform.up * -1, //is it required?
+                MovementType.Forward => _rb.transform.forward,
+                MovementType.Backward => _rb.transform.forward * -1,
+                MovementType.StrafeRight => _rb.transform.right,
+                MovementType.StrafeLeft => _rb.transform.right * -1,
+                MovementType.Up => _rb.transform.up,
+                MovementType.Down => _rb.transform.up * -1,
                 _ => Vector3.zero
             };
         }
@@ -152,6 +154,41 @@ namespace Assets.Scripts.MovementSystem.Player
                     if (actionMap.bindings.Contains(binding)) continue;
                     _movementActuationMap[movementPair.Key] = null;
                 }
+            }
+        }
+
+        private void CalculateMovementVector()
+        {
+            _movementVector = Vector3.zero;
+            foreach (var movementPair in _movementActuationMap)
+            {
+                if (movementPair.Value == null) continue;
+                _movementVector += GetMovementDirection(movementPair.Key);
+            }
+
+            Notify();
+        }
+
+        private void CalculateForceVector()
+        {
+            _forceVector = Vector3.zero;
+            foreach (var actuator in _legActuators)
+            {
+                _forceVector += actuator.Actuate(_movementVector);
+            }
+        }
+
+        public void CalculateMovementVector(object sender, EventArgs e)
+        {
+            //if (sender is not PlayerRotationController) return;
+            CalculateMovementVector();
+        }
+
+        public override void Notify()
+        {
+            foreach (var observer in _observers)
+            {
+                observer.Handle(this);
             }
         }
     }

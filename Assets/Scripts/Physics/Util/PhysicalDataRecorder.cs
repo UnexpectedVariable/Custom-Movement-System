@@ -20,7 +20,11 @@ namespace Assets.Scripts.Physics.Util
 
         public PhysicalData Data
         {
-            get => _data;
+            get
+            {
+                if (_data == null) _data = new PhysicalData(this);
+                return _data;
+            }
         }
 
         #region events
@@ -40,7 +44,6 @@ namespace Assets.Scripts.Physics.Util
             {
                 _rigidbody = GetComponent<Rigidbody>();
             }
-            _data = new PhysicalData(this);
 
             _lastVelocity = _rigidbody.velocity;
         }
@@ -53,7 +56,7 @@ namespace Assets.Scripts.Physics.Util
         public void UpdateAcceleration()
         {
             Vector3 acceleration = 1 / Time.fixedDeltaTime * (_rigidbody.velocity - _lastVelocity);
-            if (_data.Acceleration == acceleration) return;
+            if (Data.Acceleration == acceleration) return;
             AccelerationChanged?.Invoke(this, acceleration);
         }
     }

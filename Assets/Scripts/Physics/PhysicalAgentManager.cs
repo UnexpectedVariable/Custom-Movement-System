@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Physics.Util;
+﻿using Assets.Scripts.Physics.Friction;
+using Assets.Scripts.Physics.Util;
 using Assets.Scripts.Util;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace Assets.Scripts.Physics
         {
             get
             {
-                return CalculateAveragerAcceleration();
+                return CalculateAverageAcceleration();
             }
         }
 
@@ -40,7 +41,7 @@ namespace Assets.Scripts.Physics
             return Enumerable.Sum(_rigidbodies.Select((rigidbody) => rigidbody.mass));
         }
 
-        public Vector3 CalculateAveragerAcceleration()
+        public Vector3 CalculateAverageAcceleration()
         {
             var data = PhysicalDataRepository.GetFullData();
             return data
@@ -52,6 +53,12 @@ namespace Assets.Scripts.Physics
         {
             _dataRecorders = GetComponentsInChildren<PhysicalDataRecorder>().ToList();
             _rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
+
+            var frictionTrackers = GetComponentsInChildren<FrictionCollidersTracker>();
+            foreach(var tracker in frictionTrackers)
+            {
+                tracker.Inject(this);
+            }
 
             PhysicalDataRepository = new PhysicalDataRepository();
             PhysicalDataRepository.AddBulkData(_dataRecorders.Select((recorder) => recorder.Data));
